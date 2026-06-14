@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LINK : 우리의 연결지도</title>
+
+<style>
+body{
+  margin:0;
+  background:#050816;
+  color:white;
+  overflow:hidden;
+  font-family:'Malgun Gothic',sans-serif;
+}
+
+#title{
+  position:absolute;
+  top:40px;
+  width:100%;
+  text-align:center;
+  z-index:10;
+}
+
+#title h1{
+  margin:0;
+  font-size:60px;
+  color:#7dd3fc;
+}
+
+#title p{
+  margin:5px;
+  opacity:0.8;
+}
+
+#count{
+  position:absolute;
+  top:20px;
+  right:30px;
+  font-size:22px;
+}
+
+canvas{
+  display:block;
+}
+
+#dreams{
+  position:absolute;
+  left:30px;
+  bottom:30px;
+  width:350px;
+  font-size:18px;
+  line-height:1.8;
+}
+</style>
+</head>
+
+<body>
+
+<div id="title">
+  <h1>LINK</h1>
+  <p>우리의 연결지도</p>
+</div>
+
+<div id="count">
+참여자 <span id="total">0</span>명
+</div>
+
+<div id="dreams"></div>
+
+<canvas id="canvas"></canvas>
+
+<script>
+
+const API =
+"https://script.google.com/macros/s/AKfycbx7s_0AE0OnoHHcEXPzSncn1Mqo9IhXrpUDZO7d2D1F73Ul0kxpvKEwPPJFSabYw7ONyg/exec";
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+function resize(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+const interests = {
+  "음악": {x:0.5,y:0.2},
+  "스포츠": {x:0.25,y:0.45},
+  "예술": {x:0.75,y:0.45},
+  "환경": {x:0.3,y:0.75},
+  "봉사": {x:0.7,y:0.75},
+  "AI": {x:0.5,y:0.55},
+  "진로": {x:0.5,y:0.88}
+};
+
+let people=[];
+
+async function loadData(){
+
+  const res = await fetch(API);
+  const data = await res.json();
+
+  people=data;
+
+  document.getElementById("total").innerText=data.length;
+
+  document.getElementById("dreams").innerHTML=
+    data.slice(-10)
+      .reverse()
+      .map(d=>"⭐ "+d.dream)
+      .join("<br>");
+}
+
+function draw(){
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  Object.keys(interests).forEach(name=>{
+
+    const p=interests[name];
+
+    const x=p.x*canvas.width;
+    const y=p.y*canvas.height;
+
+    ctx.beginPath();
+    ctx.arc(x,y,35,0,Math.PI*2);
+
+    ctx.fillStyle="#7dd3fc";
+    ctx.fill();
+
+    ctx.fillStyle="white";
+    ctx.font="20px sans-serif";
+    ctx.textAlign="center";
+
+    ctx.fillText(name,x,y+60);
+  });
+
+  people.forEach(person=>{
+
+    const target=interests[person.interest];
+
+    if(!target) return;
+
+    const tx=target.x*canvas.width;
+    const ty=target.y*canvas.height;
+
+    const angle=Math.random()*Math.PI*2;
+    const dist=50+Math.random()*100;
+
+    const px=tx+Math.cos(angle)*dist;
+    const py=ty+Math.sin(angle)*dist;
+
+    ctx.beginPath();
+    ctx.moveTo(px,py);
+    ctx.lineTo(tx,ty);
+    ctx.strokeStyle="rgba(125,211,252,0.4)";
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(px,py,5,0,Math.PI*2);
+    ctx.fillStyle="white";
+    ctx.fill();
+  });
+
+  requestAnimationFrame(draw);
+}
+
+loadData();
+setInterval(loadData,10000);
+
+draw();
+
+</script>
+</body>
+</html>
