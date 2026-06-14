@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LINK : 우리의 연결지도</title>
+
+<style>
+body{
+  margin:0;
+  background:#050816;
+  color:white;
+  font-family:'Malgun Gothic',sans-serif;
+  overflow:hidden;
+}
+
+.center{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
+
+h1{
+  font-size:72px;
+  margin:0;
+  color:#7dd3fc;
+}
+
+p{
+  font-size:24px;
+  opacity:0.8;
+}
+
+.star{
+  position:absolute;
+  border-radius:50%;
+  background:#7dd3fc;
+  box-shadow:0 0 15px #7dd3fc;
+  animation:twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle{
+  from{opacity:0.3;}
+  to{opacity:1;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="center">
+  <h1>LINK</h1>
+  <p>우리의 연결지도</p>
+</div>
+
+<script>
+for(let i=0;i<100;i++){
+  const star=document.createElement('div');
+  star.className='star';
+
+  const size=Math.random()*6+2;
+
+  star.style.width=size+'px';
+  star.style.height=size+'px';
+
+  star.style.left=Math.random()*100+'vw';
+  star.style.top=Math.random()*100+'vh';
+
+  document.body.appendChild(star);
+}
+</script>
+
+</body>
+</html>
