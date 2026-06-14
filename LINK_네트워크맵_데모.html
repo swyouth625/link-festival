@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LINK : 우리의 연결지도</title>
+<style>
+body{margin:0;background:#050816;color:white;font-family:'Malgun Gothic',sans-serif;}
+header{padding:20px;text-align:center;background:#0b1028;}
+h1{margin:0;color:#7dd3fc;}
+#controls{padding:15px;background:#111827;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+input,select,button{padding:10px;border-radius:8px;border:none;}
+button{background:#2563eb;color:white;cursor:pointer;}
+#mynetwork{height:80vh;border-top:1px solid #1f2937;}
+</style>
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+<header>
+<h1>LINK : 우리의 연결지도</h1>
+<p>청소년축제 인터랙티브 네트워크맵 데모</p>
+</header>
+
+<div id="controls">
+<input id="name" placeholder="닉네임">
+<select id="interest">
+<option>음악</option>
+<option>스포츠</option>
+<option>환경</option>
+<option>AI</option>
+<option>예술</option>
+<option>봉사</option>
+<option>진로</option>
+</select>
+<input id="dream" placeholder="나의 꿈">
+<button onclick="addParticipant()">연결하기</button>
+</div>
+
+<div id="mynetwork"></div>
+
+<script>
+const nodes = new vis.DataSet([
+{id:'음악',label:'🎵 음악',shape:'star',size:35},
+{id:'스포츠',label:'⚽ 스포츠',shape:'star',size:35},
+{id:'환경',label:'🌎 환경',shape:'star',size:35},
+{id:'AI',label:'🤖 AI',shape:'star',size:35},
+{id:'예술',label:'🎨 예술',shape:'star',size:35},
+{id:'봉사',label:'🤝 봉사',shape:'star',size:35},
+{id:'진로',label:'🚀 진로',shape:'star',size:35}
+]);
+
+const edges = new vis.DataSet([]);
+
+const network = new vis.Network(
+document.getElementById('mynetwork'),
+{nodes:nodes,edges:edges},
+{
+physics:{enabled:true},
+nodes:{color:'#60a5fa',font:{color:'white'}},
+edges:{color:'#38bdf8'},
+interaction:{hover:true}
+}
+);
+
+let count=0;
+
+function addParticipant(){
+ const name=document.getElementById('name').value || ('참여자'+(++count));
+ const interest=document.getElementById('interest').value;
+ const dream=document.getElementById('dream').value || '꿈';
+ const id='p'+Date.now();
+
+ nodes.add({
+   id:id,
+   label:name + '\\n' + dream,
+   size:18
+ });
+
+ edges.add({
+   from:id,
+   to:interest
+ });
+
+ document.getElementById('name').value='';
+ document.getElementById('dream').value='';
+}
+</script>
+</body>
+</html>
